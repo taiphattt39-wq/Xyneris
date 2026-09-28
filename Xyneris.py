@@ -4,9 +4,7 @@ from discord.ext import commands
 from datetime import datetime, UTC, timedelta
 import os
 
-# === LẤY TOKEN TỪ BIẾN MÔI TRƯỜNG ===
 TOKEN = os.getenv("TOKEN")
-
 BOT_NAME = "Xyneris"
 antinuke_enabled = True
 nuke_track = {}
@@ -19,7 +17,6 @@ intents.members = True
 bot = commands.Bot(command_prefix="!", intents=intents, help_command=None)
 tree = bot.tree
 
-# === 12 NGÔN NGỮ ===
 LANG = {
     "vi": {"set": "✅ Đã đặt ngôn ngữ: Tiếng Việt", "antinuke_on": "🛡️ AntiNuke ĐÃ BẬT", "antinuke_off": "🚫 AntiNuke ĐÃ TẮT"},
     "en": {"set": "✅ Language set to: English", "antinuke_on": "🛡️ AntiNuke ENABLED", "antinuke_off": "🚫 AntiNuke DISABLED"},
@@ -38,7 +35,6 @@ LANG = {
 def get_lang_id(interaction):
     return user_lang.get(str(interaction.user.id), "vi")
 
-# === CHỐNG NUKE ===
 async def check_nuke(guild, action):
     if not antinuke_enabled: return
     async for entry in guild.audit_logs(limit=3, after=datetime.now(UTC)-timedelta(seconds=15)):
@@ -62,7 +58,6 @@ async def on_guild_role_delete(r): await check_nuke(r.guild, f"Xóa vai trò: {r
 @bot.event
 async def on_member_ban(g, u): await check_nuke(g, f"Cấm: {u}")
 
-# === LỆNH ANTINUKE ===
 @tree.command(name="antinuke", description="Bật/Tắt chống nuke")
 @app_commands.checks.has_permissions(administrator=True)
 async def antinuke_cmd(interaction: discord.Interaction, trang_thai: str):
@@ -86,7 +81,6 @@ async def antinuke_auto(interaction: discord.Interaction, current: str):
 async def err(interaction, e):
     await interaction.response.send_message("❌ Chỉ Quản Trị Viên dùng được!", ephemeral=True)
 
-# === LỆNH NGÔN NGỮ ===
 @tree.command(name="language", description="Chọn ngôn ngữ")
 async def lang_cmd(interaction: discord.Interaction, ngon_ngu: str):
     if ngon_ngu not in LANG:
@@ -112,7 +106,6 @@ async def lang_auto(interaction: discord.Interaction, current: str):
         app_commands.Choice(name="🇮🇩 Indonesia", value="id"),
     ]
 
-# === KHỞI ĐỘNG ===
 @bot.event
 async def on_ready():
     print(f"✅ {BOT_NAME} ĐÃ LÊN! — {bot.user}")

@@ -3,7 +3,21 @@ from discord import app_commands
 from discord.ext import commands
 from datetime import datetime, UTC, timedelta
 import os
+from flask import Flask
+import threading
 
+# === GIỮ BOT LUÔN SỐNG ===
+app = Flask(__name__)
+@app.route('/')
+def keep_alive():
+    return "✅ Xyneris đang chạy! Bot hoạt động bình thường!"
+
+def run_web():
+    app.run(host="0.0.0.0", port=10000)  # Dùng cổng 10000 cho Render
+
+threading.Thread(target=run_web, daemon=True).start()
+
+# === BOT CHÍNH ===
 TOKEN = os.getenv("TOKEN")
 BOT_NAME = "Xyneris"
 antinuke_enabled = True
@@ -114,3 +128,4 @@ async def on_ready():
 
 if __name__ == "__main__":
     bot.run(TOKEN)
+    
